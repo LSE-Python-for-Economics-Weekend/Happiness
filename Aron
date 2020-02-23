@@ -1,0 +1,1061 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "     Country name  Year  Life Ladder  Log GDP per capita  Social support  \\\n",
+      "0     Afghanistan  2008     3.723590            7.168690        0.450662   \n",
+      "1     Afghanistan  2009     4.401778            7.333790        0.552308   \n",
+      "2     Afghanistan  2010     4.758381            7.386629        0.539075   \n",
+      "3     Afghanistan  2011     3.831719            7.415019        0.521104   \n",
+      "4     Afghanistan  2012     3.782938            7.517126        0.520637   \n",
+      "...           ...   ...          ...                 ...             ...   \n",
+      "1699     Zimbabwe  2014     4.184451            7.562753        0.765839   \n",
+      "1700     Zimbabwe  2015     3.703191            7.556052        0.735800   \n",
+      "1701     Zimbabwe  2016     3.735400            7.538829        0.768425   \n",
+      "1702     Zimbabwe  2017     3.638300            7.549491        0.754147   \n",
+      "1703     Zimbabwe  2018     3.616480            7.553395        0.775388   \n",
+      "\n",
+      "      Healthy life expectancy at birth  Freedom to make life choices  \\\n",
+      "0                            50.799999                      0.718114   \n",
+      "1                            51.200001                      0.678896   \n",
+      "2                            51.599998                      0.600127   \n",
+      "3                            51.919998                      0.495901   \n",
+      "4                            52.240002                      0.530935   \n",
+      "...                                ...                           ...   \n",
+      "1699                         52.380001                      0.642034   \n",
+      "1700                         53.799999                      0.667193   \n",
+      "1701                         54.400002                      0.732971   \n",
+      "1702                         55.000000                      0.752826   \n",
+      "1703                         55.599998                      0.762675   \n",
+      "\n",
+      "      Generosity  Perceptions of corruption  Positive affect  ...  \\\n",
+      "0       0.177889                   0.881686         0.517637  ...   \n",
+      "1       0.200178                   0.850035         0.583926  ...   \n",
+      "2       0.134353                   0.706766         0.618265  ...   \n",
+      "3       0.172137                   0.731109         0.611387  ...   \n",
+      "4       0.244273                   0.775620         0.710385  ...   \n",
+      "...          ...                        ...              ...  ...   \n",
+      "1699   -0.048634                   0.820217         0.725214  ...   \n",
+      "1700   -0.097354                   0.810457         0.715079  ...   \n",
+      "1701   -0.068105                   0.723612         0.737636  ...   \n",
+      "1702   -0.069670                   0.751208         0.806428  ...   \n",
+      "1703   -0.038384                   0.844209         0.710119  ...   \n",
+      "\n",
+      "      GINI index (World Bank estimate), average 2000-16  \\\n",
+      "0                                                   NaN   \n",
+      "1                                                   NaN   \n",
+      "2                                                   NaN   \n",
+      "3                                                   NaN   \n",
+      "4                                                   NaN   \n",
+      "...                                                 ...   \n",
+      "1699                                              0.432   \n",
+      "1700                                              0.432   \n",
+      "1701                                              0.432   \n",
+      "1702                                              0.432   \n",
+      "1703                                              0.432   \n",
+      "\n",
+      "      gini of household income reported in Gallup, by wp5-year  \\\n",
+      "0                                                   NaN          \n",
+      "1                                              0.441906          \n",
+      "2                                              0.327318          \n",
+      "3                                              0.336764          \n",
+      "4                                              0.344540          \n",
+      "...                                                 ...          \n",
+      "1699                                           0.601080          \n",
+      "1700                                           0.655137          \n",
+      "1701                                           0.596690          \n",
+      "1702                                           0.581484          \n",
+      "1703                                           0.541772          \n",
+      "\n",
+      "      Most people can be trusted, Gallup  \\\n",
+      "0                                    NaN   \n",
+      "1                               0.286315   \n",
+      "2                               0.275833   \n",
+      "3                                    NaN   \n",
+      "4                                    NaN   \n",
+      "...                                  ...   \n",
+      "1699                                 NaN   \n",
+      "1700                                 NaN   \n",
+      "1701                                 NaN   \n",
+      "1702                                 NaN   \n",
+      "1703                                 NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1981-1984  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1989-1993  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1994-1998  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1999-2004  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                         0.116683   \n",
+      "1700                                         0.116683   \n",
+      "1701                                         0.116683   \n",
+      "1702                                         0.116683   \n",
+      "1703                                         0.116683   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 2005-2009  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 2010-2014  Continent  \n",
+      "0                                                 NaN       Asia  \n",
+      "1                                                 NaN       Asia  \n",
+      "2                                                 NaN       Asia  \n",
+      "3                                                 NaN       Asia  \n",
+      "4                                                 NaN       Asia  \n",
+      "...                                               ...        ...  \n",
+      "1699                                         0.082942     Africa  \n",
+      "1700                                         0.082942     Africa  \n",
+      "1701                                         0.082942     Africa  \n",
+      "1702                                         0.082942     Africa  \n",
+      "1703                                         0.082942     Africa  \n",
+      "\n",
+      "[1704 rows x 27 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "df = pd.read_csv(\"happiness_with_continent(2019).csv\") \n",
+    "country = df.groupby(['Country name'])\n",
+    "df.nunique()\n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>country</th>\n",
+       "      <th>rgdpnapc</th>\n",
+       "      <th>pop</th>\n",
+       "      <th>happinessscore</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <td>0</td>\n",
+       "      <td>Afghanistan</td>\n",
+       "      <td>1929</td>\n",
+       "      <td>33332</td>\n",
+       "      <td>3.2033</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>1</td>\n",
+       "      <td>Albania</td>\n",
+       "      <td>10342</td>\n",
+       "      <td>3044</td>\n",
+       "      <td>4.7186</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>2</td>\n",
+       "      <td>Algeria</td>\n",
+       "      <td>14331</td>\n",
+       "      <td>40102</td>\n",
+       "      <td>5.2113</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>3</td>\n",
+       "      <td>Argentina</td>\n",
+       "      <td>18875</td>\n",
+       "      <td>43887</td>\n",
+       "      <td>6.0863</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>4</td>\n",
+       "      <td>Armenia</td>\n",
+       "      <td>10080</td>\n",
+       "      <td>2919</td>\n",
+       "      <td>4.5594</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>145</td>\n",
+       "      <td>Venezuela (Bolivarian Republic of)</td>\n",
+       "      <td>15219</td>\n",
+       "      <td>30111</td>\n",
+       "      <td>4.7066</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>146</td>\n",
+       "      <td>Viet Nam</td>\n",
+       "      <td>6062</td>\n",
+       "      <td>95296</td>\n",
+       "      <td>5.1753</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>147</td>\n",
+       "      <td>Yemen</td>\n",
+       "      <td>2506</td>\n",
+       "      <td>28523</td>\n",
+       "      <td>3.3798</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>148</td>\n",
+       "      <td>Zambia</td>\n",
+       "      <td>3479</td>\n",
+       "      <td>16274</td>\n",
+       "      <td>4.1066</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>149</td>\n",
+       "      <td>Zimbabwe</td>\n",
+       "      <td>1534</td>\n",
+       "      <td>14547</td>\n",
+       "      <td>3.6632</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>150 rows × 4 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                country  rgdpnapc    pop  happinessscore\n",
+       "0                           Afghanistan      1929  33332          3.2033\n",
+       "1                               Albania     10342   3044          4.7186\n",
+       "2                               Algeria     14331  40102          5.2113\n",
+       "3                             Argentina     18875  43887          6.0863\n",
+       "4                               Armenia     10080   2919          4.5594\n",
+       "..                                  ...       ...    ...             ...\n",
+       "145  Venezuela (Bolivarian Republic of)     15219  30111          4.7066\n",
+       "146                            Viet Nam      6062  95296          5.1753\n",
+       "147                               Yemen      2506  28523          3.3798\n",
+       "148                              Zambia      3479  16274          4.1066\n",
+       "149                            Zimbabwe      1534  14547          3.6632\n",
+       "\n",
+       "[150 rows x 4 columns]"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df1 = pd.read_excel('happinessGDP.xlsx')\n",
+    "country1 = df1.groupby(['country'])\n",
+    "country1.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Most people can be trusted, WVS round 1981-1984             1579\n",
+       "Most people can be trusted, Gallup                          1524\n",
+       "Most people can be trusted, WVS round 1989-1993             1484\n",
+       "Most people can be trusted, WVS round 1999-2004             1213\n",
+       "Most people can be trusted, WVS round 1994-1998             1086\n",
+       "Most people can be trusted, WVS round 2005-2009             1074\n",
+       "GINI index (World Bank estimate)                            1061\n",
+       "Most people can be trusted, WVS round 2010-2014             1033\n",
+       "gini of household income reported in Gallup, by wp5-year     369\n",
+       "GINI index (World Bank estimate), average 2000-16            202\n",
+       "Confidence in national government                            174\n",
+       "Democratic Quality                                           146\n",
+       "Delivery Quality                                             145\n",
+       "Perceptions of corruption                                     96\n",
+       "Generosity                                                    82\n",
+       "Freedom to make life choices                                  29\n",
+       "Healthy life expectancy at birth                              28\n",
+       "Log GDP per capita                                            28\n",
+       "Positive affect                                               19\n",
+       "Negative affect                                               13\n",
+       "Social support                                                13\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "null_counts = df.isnull().sum()\n",
+    "null_counts[null_counts > 0].sort_values(ascending=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>country</th>\n",
+       "      <th>rgdpnapc</th>\n",
+       "      <th>pop</th>\n",
+       "      <th>happinessscore</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <td>23</td>\n",
+       "      <td>Central African Republic</td>\n",
+       "      <td>589</td>\n",
+       "      <td>5507</td>\n",
+       "      <td>3.0830</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>0</td>\n",
+       "      <td>Afghanistan</td>\n",
+       "      <td>1929</td>\n",
+       "      <td>33332</td>\n",
+       "      <td>3.2033</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>137</td>\n",
+       "      <td>U.R. of Tanzania: Mainland</td>\n",
+       "      <td>2660</td>\n",
+       "      <td>53349</td>\n",
+       "      <td>3.2307</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>113</td>\n",
+       "      <td>Rwanda</td>\n",
+       "      <td>1758</td>\n",
+       "      <td>11605</td>\n",
+       "      <td>3.3338</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>147</td>\n",
+       "      <td>Yemen</td>\n",
+       "      <td>2506</td>\n",
+       "      <td>28523</td>\n",
+       "      <td>3.3798</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>95</td>\n",
+       "      <td>Netherlands</td>\n",
+       "      <td>45600</td>\n",
+       "      <td>17035</td>\n",
+       "      <td>7.4876</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>57</td>\n",
+       "      <td>Iceland</td>\n",
+       "      <td>42085</td>\n",
+       "      <td>335</td>\n",
+       "      <td>7.4936</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>100</td>\n",
+       "      <td>Norway</td>\n",
+       "      <td>82814</td>\n",
+       "      <td>5236</td>\n",
+       "      <td>7.5539</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>37</td>\n",
+       "      <td>Denmark</td>\n",
+       "      <td>44836</td>\n",
+       "      <td>5731</td>\n",
+       "      <td>7.6001</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>44</td>\n",
+       "      <td>Finland</td>\n",
+       "      <td>37239</td>\n",
+       "      <td>5495</td>\n",
+       "      <td>7.7689</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>150 rows × 4 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                        country  rgdpnapc    pop  happinessscore\n",
+       "23     Central African Republic       589   5507          3.0830\n",
+       "0                   Afghanistan      1929  33332          3.2033\n",
+       "137  U.R. of Tanzania: Mainland      2660  53349          3.2307\n",
+       "113                      Rwanda      1758  11605          3.3338\n",
+       "147                       Yemen      2506  28523          3.3798\n",
+       "..                          ...       ...    ...             ...\n",
+       "95                  Netherlands     45600  17035          7.4876\n",
+       "57                      Iceland     42085    335          7.4936\n",
+       "100                      Norway     82814   5236          7.5539\n",
+       "37                      Denmark     44836   5731          7.6001\n",
+       "44                      Finland     37239   5495          7.7689\n",
+       "\n",
+       "[150 rows x 4 columns]"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df1.groupby(['country'])['happinessscore'].max()\n",
+    "df1.sort_values('happinessscore')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Continent\n",
+       "Africa           4.338695\n",
+       "Asia             5.278338\n",
+       "South America    6.083304\n",
+       "Europe           6.115556\n",
+       "North America    6.150397\n",
+       "Oceania          7.310778\n",
+       "Name: Life Ladder, dtype: float64"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ff = df.groupby(['Continent'])['Life Ladder'].mean()\n",
+    "ff.sort_values(ascending=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Country name\n",
+       "South Sudan                 3.401875\n",
+       "Togo                        3.477006\n",
+       "Central African Republic    3.514954\n",
+       "Burundi                     3.548124\n",
+       "Rwanda                      3.689593\n",
+       "                              ...   \n",
+       "Netherlands                 7.466531\n",
+       "Switzerland                 7.534953\n",
+       "Norway                      7.549186\n",
+       "Finland                     7.554010\n",
+       "Denmark                     7.692072\n",
+       "Name: Life Ladder, Length: 165, dtype: float64"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "fc = df.groupby(['Country name'])['Life Ladder'].mean()\n",
+    "fc.sort_values(ascending=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<matplotlib.lines.Line2D at 0x11a55fa90>]"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "df_edit = df[[\"Log GDP per capita\",\"Life Ladder\"]].dropna(how='any',axis=0)\n",
+    "x = df_edit['Log GDP per capita']\n",
+    "y = np.log(df_edit[\"Life Ladder\"])\n",
+    "m, b = np.polyfit(x, y, 1)\n",
+    "plt.plot(x, y, 'o')\n",
+    "plt.plot(x, m*x + b)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<matplotlib.lines.Line2D at 0x119ba8bd0>]"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "df_edit1 = df[[\"Log GDP per capita\",\"Most people can be trusted, Gallup\"]].dropna(how='any',axis=0)\n",
+    "x = df_edit1['Log GDP per capita']\n",
+    "y = np.log(df_edit1[\"Most people can be trusted, Gallup\"])\n",
+    "m, b = np.polyfit(x, y, 1)\n",
+    "plt.plot(x, y, 'o')\n",
+    "plt.plot(x, m*x + b)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'df_edit2' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-18-01d185c4123a>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      6\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 7\u001b[0;31m \u001b[0mexample\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mdf_edit2\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpivot\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mvalues\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"Life Ladder\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mindex\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"Country\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcolumns\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"Year\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      8\u001b[0m \u001b[0msns\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mheatmap\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mexample\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mNameError\u001b[0m: name 'df_edit2' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "import seaborn as sns\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "%matplotlib inline\n",
+    "\n",
+    "\n",
+    "example = df_edit2.pivot(values=\"Life Ladder\", index=\"Country\", columns=\"Year\")\n",
+    "sns.heatmap(example)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 191,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "      Log GDP per capita  Democratic Quality\n",
+      "0               7.168690           -1.929690\n",
+      "1               7.333790           -2.044093\n",
+      "2               7.386629           -1.991810\n",
+      "3               7.415019           -1.919018\n",
+      "4               7.517126           -1.842996\n",
+      "...                  ...                 ...\n",
+      "1698            7.565154           -1.026085\n",
+      "1699            7.562753           -0.985267\n",
+      "1700            7.556052           -0.893078\n",
+      "1701            7.538829           -0.900649\n",
+      "1702            7.549491           -0.988153\n",
+      "\n",
+      "[1548 rows x 2 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_edit)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 193,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "     Country name  Year  Life Ladder  Log GDP per capita  Social support  \\\n",
+      "0     Afghanistan  2008     3.723590            7.168690        0.450662   \n",
+      "1     Afghanistan  2009     4.401778            7.333790        0.552308   \n",
+      "2     Afghanistan  2010     4.758381            7.386629        0.539075   \n",
+      "3     Afghanistan  2011     3.831719            7.415019        0.521104   \n",
+      "4     Afghanistan  2012     3.782938            7.517126        0.520637   \n",
+      "...           ...   ...          ...                 ...             ...   \n",
+      "1699     Zimbabwe  2014     4.184451            7.562753        0.765839   \n",
+      "1700     Zimbabwe  2015     3.703191            7.556052        0.735800   \n",
+      "1701     Zimbabwe  2016     3.735400            7.538829        0.768425   \n",
+      "1702     Zimbabwe  2017     3.638300            7.549491        0.754147   \n",
+      "1703     Zimbabwe  2018     3.616480            7.553395        0.775388   \n",
+      "\n",
+      "      Healthy life expectancy at birth  Freedom to make life choices  \\\n",
+      "0                            50.799999                      0.718114   \n",
+      "1                            51.200001                      0.678896   \n",
+      "2                            51.599998                      0.600127   \n",
+      "3                            51.919998                      0.495901   \n",
+      "4                            52.240002                      0.530935   \n",
+      "...                                ...                           ...   \n",
+      "1699                         52.380001                      0.642034   \n",
+      "1700                         53.799999                      0.667193   \n",
+      "1701                         54.400002                      0.732971   \n",
+      "1702                         55.000000                      0.752826   \n",
+      "1703                         55.599998                      0.762675   \n",
+      "\n",
+      "      Generosity  Perceptions of corruption  Positive affect  ...  \\\n",
+      "0       0.177889                   0.881686         0.517637  ...   \n",
+      "1       0.200178                   0.850035         0.583926  ...   \n",
+      "2       0.134353                   0.706766         0.618265  ...   \n",
+      "3       0.172137                   0.731109         0.611387  ...   \n",
+      "4       0.244273                   0.775620         0.710385  ...   \n",
+      "...          ...                        ...              ...  ...   \n",
+      "1699   -0.048634                   0.820217         0.725214  ...   \n",
+      "1700   -0.097354                   0.810457         0.715079  ...   \n",
+      "1701   -0.068105                   0.723612         0.737636  ...   \n",
+      "1702   -0.069670                   0.751208         0.806428  ...   \n",
+      "1703   -0.038384                   0.844209         0.710119  ...   \n",
+      "\n",
+      "      GINI index (World Bank estimate), average 2000-16  \\\n",
+      "0                                                   NaN   \n",
+      "1                                                   NaN   \n",
+      "2                                                   NaN   \n",
+      "3                                                   NaN   \n",
+      "4                                                   NaN   \n",
+      "...                                                 ...   \n",
+      "1699                                              0.432   \n",
+      "1700                                              0.432   \n",
+      "1701                                              0.432   \n",
+      "1702                                              0.432   \n",
+      "1703                                              0.432   \n",
+      "\n",
+      "      gini of household income reported in Gallup, by wp5-year  \\\n",
+      "0                                                   NaN          \n",
+      "1                                              0.441906          \n",
+      "2                                              0.327318          \n",
+      "3                                              0.336764          \n",
+      "4                                              0.344540          \n",
+      "...                                                 ...          \n",
+      "1699                                           0.601080          \n",
+      "1700                                           0.655137          \n",
+      "1701                                           0.596690          \n",
+      "1702                                           0.581484          \n",
+      "1703                                           0.541772          \n",
+      "\n",
+      "      Most people can be trusted, Gallup  \\\n",
+      "0                                    NaN   \n",
+      "1                               0.286315   \n",
+      "2                               0.275833   \n",
+      "3                                    NaN   \n",
+      "4                                    NaN   \n",
+      "...                                  ...   \n",
+      "1699                                 NaN   \n",
+      "1700                                 NaN   \n",
+      "1701                                 NaN   \n",
+      "1702                                 NaN   \n",
+      "1703                                 NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1981-1984  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1989-1993  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1994-1998  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 1999-2004  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                         0.116683   \n",
+      "1700                                         0.116683   \n",
+      "1701                                         0.116683   \n",
+      "1702                                         0.116683   \n",
+      "1703                                         0.116683   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 2005-2009  \\\n",
+      "0                                                 NaN   \n",
+      "1                                                 NaN   \n",
+      "2                                                 NaN   \n",
+      "3                                                 NaN   \n",
+      "4                                                 NaN   \n",
+      "...                                               ...   \n",
+      "1699                                              NaN   \n",
+      "1700                                              NaN   \n",
+      "1701                                              NaN   \n",
+      "1702                                              NaN   \n",
+      "1703                                              NaN   \n",
+      "\n",
+      "      Most people can be trusted, WVS round 2010-2014  Continent  \n",
+      "0                                                 NaN       Asia  \n",
+      "1                                                 NaN       Asia  \n",
+      "2                                                 NaN       Asia  \n",
+      "3                                                 NaN       Asia  \n",
+      "4                                                 NaN       Asia  \n",
+      "...                                               ...        ...  \n",
+      "1699                                         0.082942     Africa  \n",
+      "1700                                         0.082942     Africa  \n",
+      "1701                                         0.082942     Africa  \n",
+      "1702                                         0.082942     Africa  \n",
+      "1703                                         0.082942     Africa  \n",
+      "\n",
+      "[1704 rows x 27 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 194,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_edit1 = df[[\"Log GDP per capita\",\"Life Ladder\",]].dropna(how='any',axis=0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 195,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "      Log GDP per capita  Life Ladder\n",
+      "0               7.168690     3.723590\n",
+      "1               7.333790     4.401778\n",
+      "2               7.386629     4.758381\n",
+      "3               7.415019     3.831719\n",
+      "4               7.517126     3.782938\n",
+      "...                  ...          ...\n",
+      "1699            7.562753     4.184451\n",
+      "1700            7.556052     3.703191\n",
+      "1701            7.538829     3.735400\n",
+      "1702            7.549491     3.638300\n",
+      "1703            7.553395     3.616480\n",
+      "\n",
+      "[1676 rows x 2 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_edit1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_edit2 = df[[\"Log GDP per capita\",\"Life Ladder\",\"Year\",\"Country name\"]].dropna(how='any',axis=0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'df_edit2' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-2-745b19718b91>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdf_edit2\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m: name 'df_edit2' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_edit2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import seaborn as sns\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "%matplotlib inline\n",
+    "\n",
+    "\n",
+    "example = df_edit2.pivot(values=\"Life Ladder\", columns=\"Year\", index=\"Country name\")\n",
+    "fig, ax = plt.subplots(figsize=(500,500))\n",
+    "\n",
+    "sns.heatmap(example)\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'df_edit2' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-2-6e7342cd161f>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mdf_edit2\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m: name 'df_edit2' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "df_edit2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "invalid syntax (<ipython-input-3-cfd8c7b6d5cd>, line 7)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;36m  File \u001b[0;32m\"<ipython-input-3-cfd8c7b6d5cd>\"\u001b[0;36m, line \u001b[0;32m7\u001b[0m\n\u001b[0;31m    df = pd.read_csv(content/drive/My Drive/P4E/happiness_with_continent(2019).csv”)\u001b[0m\n\u001b[0m                                          ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m invalid syntax\n"
+     ]
+    }
+   ],
+   "source": [
+    "import seaborn as sns\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "%matplotlib inline\n",
+    "12:15\n",
+    "df = pd.read_csv(\"/content/drive/My Drive/P4E/happiness_with_continent(2019).csv”)\n",
+    "df_edit2 = df[[“Log GDP per capita”,“Life Ladder”,“Year”,“Country name”]].dropna(how=‘any’,axis=0)\n",
+    "df_edit2[“Life Ladder”] = np.round(df_edit2[“Life Ladder”], 4)\n",
+    "example = df_edit2.pivot(values=“Life Ladder”, columns=“Year”, index=“Country name”)\n",
+    "fig, ax = plt.subplots(figsize=(35,100))\n",
+    "ax=sns.heatmap(example, annot=True, fmt=“”)\n",
+    "# sns.heatmap(example,cmap=“BuRd”)\n",
+    "sns.heatmap(example, annot=True, vmin=3, vmax=8, fmt=“”, ax=ax, cmap=“RdBu”)\n",
+    "# sns.heatmap(example, linewidths=.5)\n",
+    "# sns.set_style(“darkgrid”)\n",
+    "sns.plot(example)\n",
+    "# sns.heatmap(example)\n",
+    "# plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
